@@ -2,6 +2,7 @@
 {
     public class GaParameters
     {
+        public string ExecutionId { get; set; }
         public string TargetImage { get; init; }
         public int PolygonCap { get; init; }
         public int PointCap { get; init; }

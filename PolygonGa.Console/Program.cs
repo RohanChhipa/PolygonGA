@@ -14,13 +14,14 @@ namespace PolygonGa.Console
 
             var runner = new AlgorithmRunner(new GaParameters
             {
-                Generations = 300,
-                PopulationSize = 50,
-                PolygonCap = 100,
-                PointCap = 6,
-                TournamentSize = 5,
-                MutationRate = 0.15,
-                TargetImage = "Images/polygon.png"
+                ExecutionId = "starry_night",
+                Generations = 2500,
+                PopulationSize = 100,
+                PolygonCap = 1000,
+                PointCap = 3,
+                TournamentSize = 10,
+                MutationRate = 0.10,
+                TargetImage = "Images/starry_night.jpg"
             }, logger);
             await runner.Run();
         }

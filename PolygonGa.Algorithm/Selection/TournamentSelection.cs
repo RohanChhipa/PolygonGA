@@ -4,7 +4,7 @@ using MersenneTwister;
 
 namespace PolygonGa.Algorithm.Selection
 {
-    public class TournamentSelection
+    public class TournamentSelection : ISelection
     {
         private readonly int _tournamentSize;
 

@@ -3,7 +3,7 @@ using MersenneTwister;
 
 namespace PolygonGa.Algorithm.Crossover
 {
-    public class TwoPointCrossover
+    public class TwoPointCrossover : ICrossover
     {
         public (Chromosome, Chromosome) Apply(Chromosome parentA, Chromosome parentB)
         {
