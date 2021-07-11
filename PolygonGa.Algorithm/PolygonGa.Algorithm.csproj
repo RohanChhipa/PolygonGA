@@ -5,12 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="Images\polygon.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="MersenneTwister" Version="1.0.6" />
       <PackageReference Include="Serilog" Version="2.10.0" />
       <PackageReference Include="System.Drawing.Common" Version="5.0.2" />

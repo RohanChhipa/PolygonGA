@@ -12,8 +12,16 @@ namespace PolygonGa.Console
                 .WriteTo.Console()
                 .CreateLogger();
 
-            var runner = new AlgorithmRunner(logger);
-            await runner.Run("Images/polygon.png");
+            var runner = new AlgorithmRunner(new GaParameters
+            {
+                Generations = 50,
+                PopulationSize = 10,
+                PolygonCap = 50,
+                PointCap = 10,
+                TournamentSize = 5,
+                TargetImage = "Images/polygon.png"
+            }, logger);
+            await runner.Run();
         }
     }
 }
