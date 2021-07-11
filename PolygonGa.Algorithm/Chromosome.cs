@@ -8,7 +8,7 @@ namespace PolygonGa.Algorithm
     public class Chromosome
     {
         private const double ScaleOffset = 1.5;
-        private const int MinPolygonCap = 3;
+        private const int MinPointCap = 3;
 
         public List<ImagePolygon> Polygons { get; }
 
@@ -18,7 +18,6 @@ namespace PolygonGa.Algorithm
         {
             Fitness = double.MaxValue;
 
-            var polygons = (int) (Randoms.NextDouble() * polygonCap);
             var widthAdjusted = imageSize.Width * ScaleOffset;
             var heightAdjusted = imageSize.Height * ScaleOffset;
 
@@ -26,11 +25,11 @@ namespace PolygonGa.Algorithm
             var heightOffset = (heightAdjusted - imageSize.Height) / 2;
 
             Polygons = new List<ImagePolygon>();
-            for (var k = 0; k < polygons; k++)
+            for (var k = 0; k < polygonCap; k++)
             {
                 var points = (int) (Randoms.NextDouble() * pointCap);
-                if (points < MinPolygonCap)
-                    points = MinPolygonCap;
+                if (points < MinPointCap)
+                    points = MinPointCap;
 
 
                 var imagePolygon = new ImagePolygon

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using MersenneTwister;
 using PolygonGa.Algorithm.Crossover;
 using PolygonGa.Algorithm.Fitness;
+using PolygonGa.Algorithm.Mutation;
 using PolygonGa.Algorithm.Selection;
 using Serilog;
 
@@ -16,9 +18,10 @@ namespace PolygonGa.Algorithm
         private readonly ILogger _logger;
         private readonly Image _targetImage;
 
-        private readonly MseFitnessFunction _fitnessFunction;
-        private readonly SinglePointCrossover _crossover;
+        private readonly FitnessFunction _fitnessFunction;
+        private readonly TwoPointCrossover _crossover;
         private readonly TournamentSelection _selection;
+        private readonly IList<IMutation> _mutations;
 
         public AlgorithmRunner(GaParameters parameters, ILogger logger)
         {
@@ -30,23 +33,29 @@ namespace PolygonGa.Algorithm
 
             _logger.Information("Image size - Width {Width} Height {Height}", _targetImage.Width, _targetImage.Height);
 
-            _fitnessFunction = new MseFitnessFunction(_targetImage);
-            _crossover = new SinglePointCrossover();
+            _fitnessFunction = new FitnessFunction(_targetImage);
+            _crossover = new TwoPointCrossover();
             _selection = new TournamentSelection(_parameters.TournamentSize);
+            _mutations = new List<IMutation>
+            {
+                new PolygonColourMutation(),
+                new PolygonSwapMutation(),
+                new PolygonSizeMutation()
+            };
         }
 
-        public Task Run()
+        public async Task Run()
         {
             var population = InitPopulation();
-            var bestChromosome = population.First();
+            await CalculateFitness(population);
 
+            var bestChromosome = population.First();
             for (var gen = 0; gen < _parameters.Generations; gen++)
             {
-                CalculateFitness(population);
-
                 population = Crossover(population);
                 Mutation(population);
 
+                await CalculateFitness(population);
                 population = population.OrderBy(chromosome => chromosome.Fitness).ToList();
 
                 bestChromosome = population.First();
@@ -54,8 +63,6 @@ namespace PolygonGa.Algorithm
             }
 
             SaveSolution(bestChromosome);
-
-            return Task.CompletedTask;
         }
 
         private List<Chromosome> InitPopulation()
@@ -66,12 +73,13 @@ namespace PolygonGa.Algorithm
                 .ToList();
         }
 
-        private void CalculateFitness(List<Chromosome> population)
+        private async Task CalculateFitness(List<Chromosome> population)
         {
             foreach (var chromosome in population)
             {
-                var image = GenerateImage(chromosome, _targetImage.Size);
+                using var image = GenerateImage(chromosome, _targetImage.Size);
                 chromosome.Fitness = _fitnessFunction.Calculate(image);
+                // _logger.Information("Fitness {fitness}", chromosome.Fitness);
             }
         }
 
@@ -93,7 +101,14 @@ namespace PolygonGa.Algorithm
 
         private void Mutation(List<Chromosome> population)
         {
-            throw new NotImplementedException();
+            foreach (var chromosome in population)
+            {
+                if (Randoms.NextDouble() > _parameters.MutationRate)
+                    continue;
+
+                var idx = Randoms.Next(_mutations.Count);
+                _mutations[idx].Apply(chromosome);
+            }
         }
 
         private Bitmap GenerateImage(Chromosome chromosome, Size size)
@@ -101,7 +116,7 @@ namespace PolygonGa.Algorithm
             var bitmap = new Bitmap(size.Width, size.Height);
             var graphics = Graphics.FromImage(bitmap);
 
-            graphics.Clear(Color.White);
+            graphics.Clear(Color.Black);
 
             foreach (var polygon in chromosome.Polygons)
             {

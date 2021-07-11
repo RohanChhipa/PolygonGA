@@ -8,5 +8,6 @@
         public int PopulationSize { get; init; }
         public int Generations { get; init; }
         public int TournamentSize { get; init; }
+        public double MutationRate { get; init; }
     }
 }
