@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Linq;
 
 namespace PolygonGa.Algorithm
@@ -8,7 +7,7 @@ namespace PolygonGa.Algorithm
     {
         public int[] Rgb { get; set; }
 
-        public List<Point> Points { get; set; }
+        public Point[] Points { get; set; }
 
         public ImagePolygon()
         {
@@ -17,7 +16,7 @@ namespace PolygonGa.Algorithm
         public ImagePolygon(ImagePolygon imagePolygon)
         {
             Rgb = imagePolygon.Rgb.Select(i => i).ToArray();
-            Points = imagePolygon.Points.Select(point => new Point(point.X, point.Y)).ToList();
+            Points = imagePolygon.Points.Select(point => new Point(point.X, point.Y)).ToArray();
         }
     }
 }

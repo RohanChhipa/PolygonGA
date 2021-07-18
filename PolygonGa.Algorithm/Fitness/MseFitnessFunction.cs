@@ -3,20 +3,27 @@ using System.Drawing;
 
 namespace PolygonGa.Algorithm.Fitness
 {
-    public class MseFitnessFunction
+    public class MseFitnessFunction : IFitnessFunction
     {
-        private int[][] TargetImage { get; }
+        private readonly int[][][] _pixels;
 
         public MseFitnessFunction(Image image)
         {
-            var bitmap = new Bitmap(image);
-            TargetImage = new int[bitmap.Height][];
-            for (var k = 0; k < bitmap.Height; k++)
+            var targetImage = new Bitmap(image);
+
+            _pixels = new int[targetImage.Height][][];
+            for (var y = 0; y < targetImage.Height; y++)
             {
-                TargetImage[k] = new int[bitmap.Width];
-                for (var j = 0; j < bitmap.Width; j++)
+                _pixels[y] = new int[targetImage.Width][];
+                for (var x = 0; x < targetImage.Width; x++)
                 {
-                    TargetImage[k][j] = GetColourAverage(bitmap.GetPixel(j, k));
+                    var targetPixel = targetImage.GetPixel(x, y);
+                    _pixels[y][x] = new int[]
+                    {
+                        targetPixel.R,
+                        targetPixel.G,
+                        targetPixel.B
+                    };
                 }
             }
         }
@@ -24,21 +31,25 @@ namespace PolygonGa.Algorithm.Fitness
         public double Calculate(Bitmap image)
         {
             var sum = 0d;
-            for (var k = 0; k < image.Height; k++)
+            for (var x = 0; x < image.Width; x++)
             {
-                for (var j = 0; j < image.Width; j++)
+                for (var y = 0; y < image.Height; y++)
                 {
-                    var colour = GetColourAverage(image.GetPixel(j, k));
-                    sum += Math.Pow(TargetImage[k][j] - colour, 2);
+                    var targetPixel = _pixels[y][x];
+                    var srcPixel = image.GetPixel(x, y);
+
+                    sum += Math.Pow(targetPixel[0] - srcPixel.R, 2)
+                           + Math.Pow(targetPixel[1] - srcPixel.G, 2)
+                           + Math.Pow(targetPixel[2] - srcPixel.B, 2);
+
+                    if (srcPixel.ToKnownColor() == KnownColor.Black)
+                    {
+                        sum += Math.Pow(255, 2) * 3;
+                    }
                 }
             }
 
-            return sum / (image.Height * image.Width);
-        }
-
-        private int GetColourAverage(Color pixel)
-        {
-            return (pixel.R + pixel.G + pixel.B) / 3;
+            return sum;
         }
     }
 }
