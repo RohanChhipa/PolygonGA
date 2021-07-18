@@ -6,3 +6,4 @@
 
 ![mona_lisa](./Results/mona_lisa/mona_lisa.jpg) ![mona_lisa_squares](./Results/mona_lisa/mona_lisa_squares.gif)
 
+![starry_night](./Results/starry_night/starry_night.jpg) ![starry_night_squares](./Results/starry_night/starry_night_squares.gif)
