@@ -5,7 +5,7 @@ namespace PolygonGa.Algorithm.Mutation
 {
     public class PolygonShearMutationMutation : IMutation
     {
-        private const float ScaleFactor = 0.3f;
+        private const float ScaleFactor = 0.7f;
 
         private readonly Matrix _matrix;
 
