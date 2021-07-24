@@ -6,7 +6,7 @@ namespace PolygonGa.Algorithm.Mutation
 {
     public class PolygonMoveMutation : IMutation
     {
-        private const float ScaleFactor = 0.2f;
+        private const float ScaleFactor = 0.6f;
 
         private readonly Size _size;
         private readonly Matrix _matrix;

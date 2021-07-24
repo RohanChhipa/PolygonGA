@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using MersenneTwister;
+using PolygonGa.Algorithm.Extensions;
 
 namespace PolygonGa.Algorithm.PolygonGenerator
 {
-    public class RightTrianglePolygonGenerator : IPolygonGenerator
+    public class TrianglePolygonGenerator : IPolygonGenerator
     {
-        private const double SquareScale = 0.1;
+        private readonly Matrix _matrix;
+        private const double SquareScale = 0.15;
 
+        public TrianglePolygonGenerator()
+        {
+            _matrix = new Matrix();
+        }
+        
         public ImagePolygon Apply(int numPoints, Size imageSize)
         {
             var rgb = new[]
@@ -29,6 +37,17 @@ namespace PolygonGa.Algorithm.PolygonGenerator
                 new(x + squareSize, y + squareSize),
                 new(x, y + squareSize)
             };
+            
+            _matrix.Reset();
+            _matrix.RotateAt((float) (Randoms.NextDouble() * 360), points.GetMidPoint());
+            if (Randoms.NextDouble() < 0.5)
+                _matrix.Shear((float) Randoms.NextDouble(), 0);
+
+            if (Randoms.NextDouble() < 0.5)
+                _matrix.Shear(0, (float) Randoms.NextDouble());
+
+            _matrix.TransformPoints(points);
+            
 
             return new ImagePolygon
             {
